@@ -2,8 +2,6 @@
 rrelrates
 =========
 
-[![Travis-CI Build Status](https://travis-ci.org/rachelss/rrelrates.png?branch=master)](https://travis-ci.org/rachelss/rrelrates)
-
 Produce relative rates on from trees using the reltime method of Tamura et al. 2012.
 
 This package is a work in progress. Currently it is limited to primates and data available in ensembl. You can install the package via `devtools`
@@ -16,20 +14,10 @@ Examples
 --------
 
 ### Mean and Variance of the relative rates
-
-    #> Loading required package: rensembl
-    #> Loading required package: phytools
-    #> Loading required package: ape
-    #> Loading required package: maps
-    #> Loading required package: phangorn
-    #> Loading required package: plotrix
-
 ``` r
 geneinfo("CCND1")
 #> [1] "CCND1"
 ```
-
-![](README_files/figure-markdown_github/unnamed-chunk-3-1.png)
 
     #> $CCND1_ENSPPYP00000003434_Pabe
     #> [1] 2.232375
