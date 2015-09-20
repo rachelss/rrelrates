@@ -1,0 +1,33 @@
+---
+title: "README.Rmd"
+author: "Rachel Schwartz"
+date: "September 20, 2015"
+output:
+  md_document:
+    variant: markdown_github
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, echo = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+# rrelrates
+[![Travis-CI Build
+Status](https://travis-ci.org/rachelss/rrelrates.png?branch=master)](https://travis-ci.org/rachelss/rrelrates)
+
+
+Produce relative rates on from trees using the reltime method of Tamura et al. 2012.
+
+This package is a work in progress. Currently it is limited to primates and data available in ensembl. You can
+install the package via `devtools`
+
+```r
+devtools::install_github("rachelss/rrelrates")
+```
+
+
+##Examples
