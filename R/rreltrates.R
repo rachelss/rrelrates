@@ -1,9 +1,3 @@
-require(ape)
-require(phytools)
-require(phangorn)
-require(plotrix)
-require(rensembl)
-
 #' Get the distance between 2 nodes / tips.
 #' 
 #' Takes node1,node2,tree
