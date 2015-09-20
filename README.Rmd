@@ -32,8 +32,10 @@ devtools::install_github("rachelss/rrelrates")
 
 ##Examples
 ###Mean and Variance of the relative rates
-```{r}
+```{r, echo = FALSE}
 library(rrelrates)
+```
+```{r}
 geneinfo("CCND1")
 ```
 
