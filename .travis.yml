@@ -1,0 +1,12 @@
+# Sample .travis.yml for R projects
+
+language: r
+
+sudo: required
+
+notifications:
+  email:
+    on_success: change
+
+after_failure: 
+    cat /home/travis/build/rachelss/rrelrates/rrelrates.Rcheck/00install.out
