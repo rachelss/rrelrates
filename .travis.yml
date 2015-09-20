@@ -4,8 +4,7 @@ language: r
 
 sudo: required
 
-r_github_packages:
- - dwinter/rensembl
+r_github_packages: dwinter/rensembl
 
 notifications:
   email:
