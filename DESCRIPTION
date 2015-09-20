@@ -1,0 +1,15 @@
+Package: rrelrates
+Title: Gets relative rates on the primate phylogeny as described by Tamura et al. 2012
+Version: 0.0.1
+Authors@R: person("Rachel", "Schwartz", email = "Rachel.Schwartz@asu.edu", role = c("aut", "cre"))
+Description: Implements reltime (rates only) on primate phylogeny given a gene name. Uses resembl to obtain the phylogeny for this gene with branch lengths.
+Depends: R (>= 3.1.3),
+    rensembl
+Imports:
+    phytools,
+    phangorn,
+    plotrix,
+    ape 
+Roxygen: list(wrap = FALSE) 
+License: MIT + file LICENSE   
+LazyData: true
