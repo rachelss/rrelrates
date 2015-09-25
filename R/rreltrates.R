@@ -63,18 +63,25 @@ rename_branch<-function(name,t){
   return(t$tip.label[tlabel])
 }
 
-#' Get the mean and var of relative rates on a tree.
+#' Get the primate tree for a gene.
 #' Also returns branches with rates outside the CI
 #' 
 #' Takes a gene name.
 #' Gets the primate tree for this gene using rensembl.
-#' Gets all relative rates.
-geneinfo<-function(gene){
+gettree<-function(gene){
   print(gene)
   t<-primate_tree(gene)
   plot(t)
   nodelabels()
   
+  return(t)
+}
+
+#' Get the relative rates on a tree.
+#' 
+#' Takes a tree.
+#' Gets all relative rates.
+geneinfo<-function(t){
   Z = as.list(t$tip.label)
   X<-t$edge
   X[X[,2]%in%1:length(t$tip),2]<-t$tip[X[X[,2]%in%1:length(t$tip),2]]
@@ -85,6 +92,14 @@ geneinfo<-function(gene){
   for (i in 1:length(numnodes) ) {
     finalrates<-append(finalrates,decendDist(numnodes[i],t,finalrates))
   }
+  return(finalrates)
+}
+
+#' Get the mean and var of relative rates on a tree.
+#' 
+#' Takes a list of rel rates
+#' Return mean, var, exceptional.
+suminfo<-function(finalrates,t){
   sd<-sqrt(var(as.numeric(finalrates)))
   lb<-mean(as.numeric(finalrates))-2*sd[[1]]
   ub<-mean(as.numeric(finalrates))+2*sd[[1]]
