@@ -33,6 +33,11 @@ decendDist<-function(bnode,t,finalrates){
   c2distAvg<-c2dist/avgdist
   rate2<-c2distAvg/length(c2d[[1]])
   
+  if(avgdist==0){
+    rate1=0
+    rate2=0
+  }
+  
   a<-Ancestors(t, bnode, type=c("parent"))
   if(a>0){
     r<-paste(a,bnode,sep=",")
@@ -49,8 +54,10 @@ decendDist<-function(bnode,t,finalrates){
 #' 
 #' Takes a value, upper bound (mean+2sd), and lower bound (mean-2sd)
 outsideCI<-function(rate,lb,ub){
-  if(rate[[1]]<lb || rate[[1]]>ub){
-    return(rate)
+  if(is.numeric(rate[[1]])){
+    if(rate[[1]]<lb || rate[[1]]>ub){
+      return(rate)
+    }
   }
 }
 
@@ -70,11 +77,34 @@ rename_branch<-function(name,t){
 #' Gets the primate tree for this gene using rensembl.
 gettree<-function(gene){
   print(gene)
-  t<-primate_tree(gene)
-  plot(t)
-  nodelabels()
-  
+  t<-tryCatch(primate_tree(gene),error=function(e) NULL)
+  if(! is.null(t)){
+    plot(t)
+    nodelabels()
+  }
+
   return(t)
+}
+
+#' Adjust a rate
+#' 
+adjust_br<-function(p,r,gentimes){  
+  a<-sapply(names(r),strsplit,",")
+  b<-mapply(match,as.character(p),a)
+  c<-match(2,b)
+  d<-r[[c]]*gentimes[[p]]
+  return(d)
+}
+
+#' Adjust rates -> gen_time * rel rate.  #TIPS ONLY
+#' 
+#' Takes a list
+#' Returns adjusted list.
+adjust_tree<-function(r,gentimes){  #assumes gentimes sp names = tip numbers
+  p<-length(gentimes)
+#  gentimes<- append(gentimes,rep("NA", length(r)-length(gentimes)))
+  r<-sapply(seq(p),adjust_br,r,gentimes)
+  return(r)
 }
 
 #' Get the relative rates on a tree.
@@ -82,36 +112,40 @@ gettree<-function(gene){
 #' Takes a tree.
 #' Gets all relative rates.
 geneinfo<-function(t){
-  Z = as.list(t$tip.label)
-  X<-t$edge
-  X[X[,2]%in%1:length(t$tip),2]<-t$tip[X[X[,2]%in%1:length(t$tip),2]]
-  names(t$edge.length)<-paste(X[,1],X[,2],sep=",")
-  
-  numnodes<-seq(length(t$tip.label)+1,length(t$tip.label)+t$Nnode)
-  finalrates<-list()
-  for (i in 1:length(numnodes) ) {
-    finalrates<-append(finalrates,decendDist(numnodes[i],t,finalrates))
+  if(! is.null(t)){
+    Z = as.list(t$tip.label)
+    X<-t$edge
+    X[X[,2]%in%1:length(t$tip),2]<-t$tip[X[X[,2]%in%1:length(t$tip),2]]
+    names(t$edge.length)<-paste(X[,1],X[,2],sep=",")
+    
+    numnodes<-seq(length(t$tip.label)+1,length(t$tip.label)+t$Nnode)
+    finalrates<-list()
+    for (i in 1:length(numnodes) ) {
+      finalrates<-append(finalrates,decendDist(numnodes[i],t,finalrates))
+    }
+    return(finalrates)
   }
-  return(finalrates)
 }
 
 #' Get the mean and var of relative rates on a tree.
 #' 
-#' Takes a list of rel rates
+#' Takes a list of rel rates and a list of trees
 #' Return mean, var, exceptional.
 suminfo<-function(finalrates,t){
-  sd<-sqrt(var(as.numeric(finalrates)))
-  lb<-mean(as.numeric(finalrates))-2*sd[[1]]
-  ub<-mean(as.numeric(finalrates))+2*sd[[1]]
-  highrates<-sapply(finalrates,outsideCI,lb,ub,USE.NAMES = TRUE)
-  h<-Filter(Negate(is.null), highrates)
-  names(h)<-lapply(names(h),rename_branch,t)
-  m<-mean(as.numeric(finalrates))
-  names(m)<-"mean"
-  v<-var(as.numeric(finalrates))
-  names(v)<-"var"
-  h<-append(h,m)
-  h<-append(h,v)
-  return(h)
+  if(! is.null(t)){
+    sd<-sqrt(var(as.numeric(finalrates)))
+    lb<-mean(as.numeric(finalrates))-2*sd[[1]]
+    ub<-mean(as.numeric(finalrates))+2*sd[[1]]
+    highrates<-sapply(finalrates,outsideCI,lb,ub,USE.NAMES = TRUE)
+    h<-Filter(Negate(is.null), highrates)
+    names(h)<-lapply(names(h),rename_branch,t)
+    m<-mean(as.numeric(finalrates))
+    names(m)<-"mean"
+    v<-var(as.numeric(finalrates))
+    names(v)<-"var"
+    h<-append(h,m)
+    h<-append(h,v)
+    return(h)
+  }
 }
 
