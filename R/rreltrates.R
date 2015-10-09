@@ -1,15 +1,17 @@
 #' Get the distance between 2 nodes / tips.
-#' 
-#' Takes node1,node2,tree
+#' @export
+#' @param node1 a tip or node 
+#' @param node2 a tip or node 
+#' @param t tree containing the nodes 
 allnodedist2<-function(node1,node2,t){
   return(dist.nodes(t)[node1,node2])
 }
 
 #' Get the relative rates of two decendant branches.
-#' 
-#' See method for reltime in Tamura et al 2012 PNAS
-#' Rate is adjusted by ancestor relative rates.
-#' Takes a node in the tree (bnode), the tree (t), and ancestral relative rates, which are used as multipliers.
+#' @export
+#' @param bnode a node in the tree with two decendants
+#' @param t the tree
+#' @param finalrates ancestral relative rates, which are used as multipliers
 #' Method:
 #' Get the average distance from bnode to all decendant tips (avgdist).
 #' For each of bnode's direct child nodes (c1,c2):
@@ -17,6 +19,7 @@ allnodedist2<-function(node1,node2,t){
 #' Divide this total by avgdist (rate1,rate2).
 #' If bnode is not the root node:
 #' Multiply each rate by the ancestor relative rate.
+#' @references Tamura et al. 2012 PNAS
 decendDist<-function(bnode,t,finalrates){
   d<-Descendants(t,bnode,type="tips")[1]
   sumdist<-sum(lapply(d,allnodedist2,bnode,t)[[1]])
@@ -51,8 +54,10 @@ decendDist<-function(bnode,t,finalrates){
 }
 
 #' Checks if value is outside confidence interval.
-#' 
-#' Takes a value, upper bound (mean+2sd), and lower bound (mean-2sd)
+#' @export
+#' @param rate a value of interest
+#' @param lb lower bound of confidence interval
+#' @param upper bound of confidence interval
 outsideCI<-function(rate,lb,ub){
   if(is.numeric(rate[[1]])){
     if(rate[[1]]<lb || rate[[1]]>ub){
@@ -62,27 +67,28 @@ outsideCI<-function(rate,lb,ub){
 }
 
 #' Gets name of tip.
-#' 
-#' Takes a tip number and tree
+#' @export
+#' @param name tip number
+#' @param t tree
 rename_branch<-function(name,t){
   branches<-strsplit(name, ",")
   tlabel<-as.numeric(branches[[1]][2])
   return(t$tip.label[tlabel])
 }
 
-#' Get the primate tree for a gene.
-#' Also returns branches with rates outside the CI
-#' 
-#' Takes a gene name.
-#' Gets the primate tree for this gene using rensembl.
-gettree<-function(gene){
+#' Get the primate tree for a gene from ensembl based on multiz alignment using rensembl.
+#' @export
+#' @gene name of gene 
+#' @plottree specify as false to skip plotting the tree
+gettree<-function(gene, plottree=TRUE){
   print(gene)
   t<-tryCatch(primate_tree(gene),error=function(e) NULL)
   if(! is.null(t)){
-    plot(t)
-    nodelabels()
+    if(plottree){
+      plot(t)
+      nodelabels()
+    }
   }
-
   return(t)
 }
 
@@ -108,9 +114,10 @@ adjust_tree<-function(r,gentimes){  #assumes gentimes sp names = tip numbers
 }
 
 #' Get the relative rates on a tree.
-#' 
-#' Takes a tree.
-#' Gets all relative rates.
+#' @export
+#' @param t tree
+#' Each rate is for a branch, which is labeled by the two nodes it connects
+#' @references Tamura et al. 2012 PNAS
 geneinfo<-function(t){
   if(! is.null(t)){
     Z = as.list(t$tip.label)
@@ -127,10 +134,10 @@ geneinfo<-function(t){
   }
 }
 
-#' Get the mean and var of relative rates on a tree.
-#' 
-#' Takes a list of rel rates and a list of trees
-#' Return mean, var, exceptional.
+#' Get the mean, var, and values outside the confidence interval (mean +- 2 std dev)
+#' @export
+#' @param finalrates a list of values
+#' @param a tree
 suminfo<-function(finalrates,t){
   if(! is.null(t)){
     sd<-sqrt(var(as.numeric(finalrates)))
