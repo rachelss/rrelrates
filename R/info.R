@@ -1,11 +1,20 @@
-#'@export
+#' Retrieves information about variants
+#' @export
+#' @param symbol gene symbol e.g. "AREG"
+#' @return information on all variants in humans including location and consequences
 vars_from_symbol <- function(symbol, flanking=0, format="json"){
     gene <- lookup_symbol(symbol)
     region <- paste0(gene$seq_region_name, ":", gene$start - flanking, "-", gene$end + flanking)
     overlap(region=region, feature="variation", format=format)
 }
 
+#' Calculate nucleotide diversity (pi) in windows adjacent to a gene in humans
+#' plot the results to look at variation over a region
 #'@export 
+#'@param symbol gene symbol e.g. "AREG"
+#'@param flanking size of region adjacent to gene
+#'@param window_size size of each window (successive, not sliding) within flanking region
+#'@return table of location and pi
 pi_around_gene <- function(symbol, flanking, window_size){
     snps <- vars_from_symbol(symbol, flanking)
     snp_ids <- sapply(snps, "[[", "id")
@@ -42,12 +51,10 @@ primate_tree <- function(symbol){
     ape::drop.tip(sp_tree, to_drop)
 }
 
-
-
 #' Get dN/dS data for primates for # variable gender with 20 "male" entries and 
 # 30 "female" entries 
-gender <- c(rep("male",20), rep("female", 30)) 
-gender <- factor(gender) 
+# gender <- c(rep("male",20), rep("female", 30)) 
+# gender <- factor(gender) 
 # stores gender as 20 1s and 30 2s and associates
 # 1=female, 2=male internally (alphabetically)
 # R now treats gender as a nominal variable 
