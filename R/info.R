@@ -58,7 +58,7 @@ primate_tree <- function(symbol){
 # stores gender as 20 1s and 30 2s and associates
 # 1=female, 2=male internally (alphabetically)
 # R now treats gender as a nominal variable 
-summary(gender)a given gene symbol
+#summary(gender)a given gene symbol
 #'@export
 #'@param symbol gene symbol
 #'@return a dataframe contaning dnds, species and taxonomic group 

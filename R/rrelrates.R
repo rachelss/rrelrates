@@ -78,8 +78,8 @@ rename_branch<-function(name,t){
 
 #' Get the primate tree for a gene from ensembl based on multiz alignment using rensembl.
 #' @export
-#' @gene name of gene 
-#' @plottree specify as false to skip plotting the tree
+#' @param gene name of gene 
+#' @param plottree specify as false to skip plotting the tree
 gettree<-function(gene, plottree=TRUE){
   print(gene)
   t<-tryCatch(primate_tree(gene),error=function(e) NULL)
