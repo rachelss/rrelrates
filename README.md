@@ -10,6 +10,13 @@ This package is a work in progress. Currently it is limited to primates and data
 devtools::install_github("rachelss/rrelrates")
 ```
 
+You must also install the following dependencies:
+``` r
+devtools::install_github("dwinter/rensembl")
+source("http://bioconductor.org/biocLite.R")
+biocLite(c("GO.db", "biomaRt"))
+```
+
 Examples
 --------
 
