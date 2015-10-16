@@ -48,3 +48,26 @@ suminfo(finalrates,root(rax_tree$bestTree,"chlorocebus_sabaeus"))
 t<-gettree("AREG")
 finalrates<-geneinfo(t)
 suminfo(finalrates,t)
+
+############################
+# fetch cDNA alighments    #
+############################
+
+#(relies on primate names char vector above)
+is_primate_orth <- function(x){
+    if(x$target$species %in% primates){
+        return( x$method_link_type ==  "ENSEMBL_ORTHOLOGUES")
+    }
+    FALSE
+}
+
+raw_ali <- rensembl::homology_symbol("hsap", "AREG",format="json",  sequence="cdna")
+primate_seqs <- Filter(is_primate_orth, raw_ali[[1]][[1]][[1]])
+
+seqs <- lapply(primate_seqs, function(x) x$target$align_seq)
+names(seqs) <- sapply(primate_seqs, function(x) x$target$species)
+seqs$homo_sapiens <- primate_seqs[[1]]$source$align_seq
+ALI <- as.DNAbin(lapply(seqs, function(s) tolower(strsplit(s, "")[[1]])))
+write.dna(ALI, "areg_cdnas_aligned.fasta", "fasta")
+
+#and then it can be re-aligned with PRANK and run with codeml
