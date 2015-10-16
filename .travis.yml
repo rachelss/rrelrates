@@ -7,6 +7,10 @@ sudo: required
 r_github_packages:
  - dwinter/rensembl
 
+bioc_packages:
+    - GO.db
+    - biomaRt
+
 notifications:
   email:
     on_success: change

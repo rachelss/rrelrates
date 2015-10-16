@@ -18,11 +18,11 @@ vars_from_symbol <- function(symbol, flanking=0, format="json"){
 pi_around_gene <- function(symbol, flanking, window_size){
     snps <- vars_from_symbol(symbol, flanking)
     snp_ids <- sapply(snps, "[[", "id")
-    if(length(snp_ids) > 1000){
+    if(length(snp_ids) > 500){
         nids <- length(snp_ids)
-        cat("that's quite a few snps... making", floor(nids/1000)+1, "calls...\n")
-        starts <- seq(1,nids, 1000)
-        res <- do.call(rbind.data.frame, lapply(starts, function(s) .fetch_snp_data(snp_ids[s:(s+999)])))
+        cat("Region contains", nids, "SNPs. Will be fetched in", floor(nids/500)+1, "requests\n")
+        starts <- seq(1,nids, 500)
+        res <- do.call(rbind.data.frame, lapply(starts, function(s) .fetch_snp_data(snp_ids[s:(s+500)])))
 
     }
     else{
@@ -117,7 +117,7 @@ analyse_primate_tree <- function(tr, plot=FALSE){
 }
 
 .fetch_snp_data <- function(snp_ids){
-  snps_data <- variation_id(snp_ids)    
+  snps_data <- variation_id(snp_ids[!is.na(snp_ids)])
   res <- lapply(snps_data, function(rec) list(pos=rec$mappings[[1]]$start, 
                                               maf=if(is.null(rec$MAF)) NA else as.numeric(rec$MAF))
   )

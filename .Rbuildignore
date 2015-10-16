@@ -1,0 +1,6 @@
+^\.gitignore$
+^\.git/$
+^rrelates_*\.tar\.gz$
+^\.travis\.yml$
+^README\.md$
+^README\.Rmd$
