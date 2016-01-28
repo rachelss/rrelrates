@@ -3,7 +3,7 @@
 #' @param keyword term of interest e.g. "mammary"
 #' @return list of GO id's related to keyword
 get_go_ids<-function(keyword){
-  ensembl = useMart("ensembl",dataset="hsapiens_gene_ensembl")
+  ensembl = useMart(biomart = "ENSEMBL_MART_ENSEMBL",dataset="hsapiens_gene_ensembl", host = "jul2015.archive.ensembl.org")
 #  filters = listFilters(ensembl)
 #  attributes = listAttributes(ensembl)
   
@@ -18,7 +18,7 @@ get_go_ids<-function(keyword){
 #' @param go_ids vector of GO id - possibly from get_go_ids
 #' @return list of genes names
 get_gene_names<-function(go_ids){
-  ensembl = useMart("ensembl",dataset="hsapiens_gene_ensembl")
+  ensembl = useMart(biomart = "ENSEMBL_MART_ENSEMBL",dataset="hsapiens_gene_ensembl", host = "jul2015.archive.ensembl.org")
   results <- getBM(attributes = c("external_gene_name"), filters = c("go_id"), values = go_ids, mart = ensembl)
   return(results)
 }

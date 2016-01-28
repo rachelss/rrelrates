@@ -17,6 +17,7 @@ allnodedist2<-function(node1,node2,t){
 #' For each of bnode's direct child nodes (c1,c2):
 #' Get the total distance from this node to each tip (c1dist,c2dist).
 #' Divide this total by avgdist (rate1,rate2).
+#' Divide by num tips on side
 #' If bnode is not the root node:
 #' Multiply each rate by the ancestor relative rate.
 #' @references Tamura et al. 2012 PNAS
